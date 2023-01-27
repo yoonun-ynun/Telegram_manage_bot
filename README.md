@@ -4,7 +4,7 @@ JAVA 초짜가 만든 텔레그램 봇입니다.
 
 이 봇은 그룹방을 관리해 줍니다.
 
-https를 위한 인증서가 필요하며 .jks로 되어있는 파일이 필요합니다.
+https를 위한 인증서가 필요하며 .jks로 돼있어야 합니다.
 
 config.txt의 hostname, key_path, key_password, Telegram_token은 필수 항목입니다.
 
