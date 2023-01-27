@@ -4,7 +4,10 @@ JAVA 초짜가 만든 텔레그램 봇입니다.
 
 이 봇은 그룹방을 관리해 줍니다.
 
-https를 위한 인증서가 필요하며 .jks로 돼있어야 합니다.
+웹훅을 등록해야 합니다.<br>
+텔레그램 api 페이지를 참고하여 <br>https://&lt;hostname&gt;/Telegram<br>
+으로 등록 해 주세요<br>
+https를 위한 인증서가 필요하며 .jks로 되어있어야 합니다.
 
 config.txt의 hostname, key_path, key_password, Telegram_token은 필수 항목입니다.
 
@@ -22,3 +25,4 @@ key_path에는 인증서의 위치, key_password에는 인증서의 비밀번호
 /unbansticker - 개별 스티커 밴을 해제합니다.<br>
 /unbanset - 스티커 세트 밴을 해제합니다.<br>
 /upscaling - 업스케일링합니다 뒤에는 art/photo와 확대정도가 들어갑니다<br>
+
