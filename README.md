@@ -7,6 +7,7 @@ JAVA 초짜가 만든 텔레그램 봇입니다.
 웹훅을 등록해야 합니다.<br>
 텔레그램 api 페이지를 참고하여 <br>https://&lt;hostname&gt;/Telegram<br>
 으로 등록 해 주세요<br>
+
 https를 위한 인증서가 필요하며 .jks로 되어있어야 합니다.
 
 config.txt의 hostname, key_path, key_password, Telegram_token은 필수 항목입니다.
