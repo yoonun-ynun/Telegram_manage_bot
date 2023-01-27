@@ -71,7 +71,11 @@ public class Hitomizip implements Runnable{
                     return;
                 }
                 if(private_count != count[0]){
-                    ac.Edittext(chat_id, message_id, count[0] + "/" + length + "개 다운로드 완료");
+                    try {
+                        ac.Edittext(chat_id, message_id, count[0] + "/" + length + "개 다운로드 완료");
+                    }catch (Exception e){
+                        System.out.println("Http 429에러 채팅 업데이트 건너뜀");
+                    }
                     private_count = count[0];
                 }
                 TIME_count++;
