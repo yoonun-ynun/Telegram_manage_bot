@@ -2,8 +2,7 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 
 public class Hitomi implements HttpHandler {
     @Override
@@ -13,12 +12,30 @@ public class Hitomi implements HttpHandler {
         if(request_method.equals("GET")){
             exchange.sendResponseHeaders(200, 0);
             System.out.println(exchange.getRequestURI());
-            OutputStream response = exchange.getResponseBody();
-            Headers responseheader = exchange.getResponseHeaders();
-            responseheader.set("Content-Type", "text/html");
-            response.write("HelloWorld!!".getBytes());
-            response.flush();
-            response.close();
+            String URI = exchange.getRequestURI().toString().substring(8);
+            File file = new File(System.getProperty("user.dir") + "/hitomi/", URI);
+            if(file.exists()){
+                FileInputStream in = new FileInputStream(file);
+                DataOutputStream response = new DataOutputStream(exchange.getResponseBody());
+                Headers responseheader = exchange.getResponseHeaders();
+                responseheader.set("Content-Type", "application/zip");
+                int BUFFER_SIZE = 4096;
+                byte[] buffer = new byte[BUFFER_SIZE];
+                int bytesRead;
+                while ((bytesRead = in.read(buffer)) != -1){
+                    response.write(buffer, 0, bytesRead);
+                }
+                response.flush();
+                response.close();
+                in.close();
+            }else {
+                OutputStream response = exchange.getResponseBody();
+                Headers responseheader = exchange.getResponseHeaders();
+                responseheader.set("Content-Type", "text/html");
+                response.write("HelloWorld!!".getBytes());
+                response.flush();
+                response.close();
+            }
         }
     }
 }
