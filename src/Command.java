@@ -170,8 +170,12 @@ public class Command {
         ac.SendMessage(chat_id, "성공");
         Action.Write_banned();
     }
-    void check_banned(String text, long message_id, long chat_id) throws Exception{
+    void check_banned(String text, long message_id, long chat_id, long usage_id) throws Exception{
         Action ac = new Action();
+        String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
+        if((status.equals("creator") || status.equals("administrator"))){
+            return;
+        }
         final boolean[] check = {false};
         final int[] count = {0};
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
@@ -360,8 +364,12 @@ public class Command {
         ac.SendMessage(chat_id, "성공");
         Action.Write_banned();
     }
-    void check_sticker_ban(String unique_id, String set_name, long chat_id, long message_id) throws Exception{
+    void check_sticker_ban(String unique_id, String set_name, long chat_id,long usage_id, long message_id) throws Exception{
         Action ac = new Action();
+        String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
+        if((status.equals("creator") || status.equals("administrator"))){
+            return;
+        }
         final boolean[] check = {false};
         final int[] count = {0};
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
@@ -400,6 +408,10 @@ public class Command {
 
     void Upscaling(long Chat_id, String file_id, String Style, String scale) throws Exception{
         Action ac = new Action();
+        if(Integer.parseInt(scale) >= 10){
+            ac.SendMessage(Chat_id, "1~10사이의 숫자만 선택 가능합니다.");
+            return;
+        }
         ArrayList<String> setting = new ArrayList<>();
         int message_id = ac.SendMessage(Chat_id, "이미지 다운로드중");
         File file = ac.getFile(file_id);

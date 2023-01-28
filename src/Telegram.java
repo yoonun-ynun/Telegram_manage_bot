@@ -39,8 +39,6 @@ public class Telegram implements HttpHandler{
                 response.write(ob.toString().getBytes());
                 response.flush();
 
-                Action ac = new Action();
-
                 //Webhook 입력
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -70,10 +68,7 @@ public class Telegram implements HttpHandler{
                     message = jObject.getJSONObject("edited_message").getString("text");
                     chat_id = jObject.getJSONObject("edited_message").getJSONObject("chat").getLong("id");
                     usage_id = jObject.getJSONObject("edited_message").getJSONObject("from").getLong("id");
-                    status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
-                    if(!(status.equals("creator") || status.equals("administrator"))){
-                        cmd.check_banned(message, key, chat_id);
-                    }
+                    cmd.check_banned(message, key, chat_id, usage_id);
                     return;
                 }else{ //아닐경우
                     key = jObject.getJSONObject("message").getLong("message_id");
@@ -85,19 +80,13 @@ public class Telegram implements HttpHandler{
                 }
                 System.out.println(key);
 
-                status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
-
                 //밴 되어있는 메시지인지 확인
                 if(jObject.getJSONObject("message").has("sticker")){
-                    if(!(status.equals("creator") || status.equals("administrator"))) {
-                        String unique_id = jObject.getJSONObject("message").getJSONObject("sticker").getJSONObject("thumb").getString("file_unique_id");
-                        String set_name = jObject.getJSONObject("message").getJSONObject("sticker").getString("set_name");
-                        cmd.check_sticker_ban(unique_id, set_name, chat_id, key);
-                    }
+                    String unique_id = jObject.getJSONObject("message").getJSONObject("sticker").getJSONObject("thumb").getString("file_unique_id");
+                    String set_name = jObject.getJSONObject("message").getJSONObject("sticker").getString("set_name");
+                    cmd.check_sticker_ban(unique_id, set_name, chat_id,usage_id,  key);
                 }else{
-                    if(!(status.equals("creator") || status.equals("administrator"))){
-                        cmd.check_banned(message, key, chat_id);
-                    }
+                    cmd.check_banned(message, key, chat_id, usage_id);
                 }
 
                 //명령어 사용 후 입력받을 때
@@ -126,10 +115,6 @@ public class Telegram implements HttpHandler{
                         }else if(jObject.getJSONObject("message").has("photo")){
                             file_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(3).getString("file_id");
                         }
-                        int scale = Integer.parseInt(check.get(usage_id).split(" ")[2]);
-                        if(scale > 10){
-                            ac.SendMessage(chat_id, "스케일은 1~10 사이에서 설정 가능합니다.");
-                        }
                         cmd.Upscaling(chat_id, file_id, check.get(usage_id).split(" ")[1], check.get(usage_id).split(" ")[2]);
                     }
                     check.remove(usage_id);
@@ -140,6 +125,7 @@ public class Telegram implements HttpHandler{
                     JSONArray jArray = jObject.getJSONObject("message").getJSONArray("entities");
                     JSONObject obj = jArray.getJSONObject(0);
                     String type = obj.getString("type");
+                    //mute를 사용할 경우의 맨션할 사용자 id 추출
                     if(!jArray.isNull(1)){
                         String mention_type = jArray.getJSONObject(1).getString("type");
                         if(mention_type.equals("text_mention")){
@@ -188,6 +174,7 @@ public class Telegram implements HttpHandler{
 
                     }
                 }
+
 
                 JSONObject userdata = jObject.getJSONObject("message").getJSONObject("from");
                 cmd.Saveinfo(chat_id, userdata);
