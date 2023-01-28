@@ -408,7 +408,7 @@ public class Command {
 
     void Upscaling(long Chat_id, String file_id, String Style, String scale) throws Exception{
         Action ac = new Action();
-        if(Integer.parseInt(scale) >= 10){
+        if(Integer.parseInt(scale) > 10){
             ac.SendMessage(Chat_id, "1~10사이의 숫자만 선택 가능합니다.");
             return;
         }
