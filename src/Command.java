@@ -17,21 +17,14 @@ public class Command {
     static boolean waifu_on = false;
     static Queue<ArrayList<String>> upscale_list = new LinkedList<>();
     static int upscale_count = 0;
-    JSONObject jObject;
-
     static boolean check = false;
-    Command(JSONObject jObject){
-        this.jObject = jObject;
-    }
-    void sendHitomi(String number){
+    void sendHitomi(long chat_id, String number){
         try {
             File file = new File(System.getProperty("user.dir") + "/hitomi/", "hitomi.webp");
             File file_dir = file.getParentFile();
             if(!file_dir.exists())
                 file_dir.mkdir();
 
-            JSONObject chat = jObject.getJSONObject("message").getJSONObject("chat");
-            Long chat_id = chat.getLong("id");
             Action action = new Action();
 
             String address = "https://hitomi.la/reader/" + number + ".html";
@@ -52,27 +45,17 @@ public class Command {
         }
     }
 
-    void sendHitomiZip(String number)throws Exception{
-        long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
+    void sendHitomiZip(long chat_id, String number)throws Exception{
         Thread th = new Thread(new Hitomizip(number, chat_id));
         th.start();
         download.add(th);
     }
 
-    void mute(String name) throws Exception{
-
-        long usage_id = jObject.getJSONObject("message").getJSONObject("from").getLong("id");
-        long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
-        long mute_id;
-        if(name.charAt(0) == '@'){
-            mute_id = info.get(chat_id).getUserid(name.replaceAll("@", ""));
-        }else {
-            mute_id = jObject.getJSONObject("message").getJSONArray("entities").getJSONObject(1).getJSONObject("user").getLong("id");
-        }
+    void mute(long user_id ,long chat_id, long usage_id, String name) throws Exception{
         Action ac = new Action();
 
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
-        String mute_status = ac.getChatMember(chat_id, mute_id).getJSONObject("result").getString("status");
+        String mute_status = ac.getChatMember(chat_id, user_id).getJSONObject("result").getString("status");
         if(!(status.equals("creator") || status.equals("administrator"))){
             ac.SendMessage(chat_id, "관리자 이상의 등급만 사용할 수 있습니다.");
             return;
@@ -82,20 +65,12 @@ public class Command {
             return;
         }
 
-        ac.ChatPermissions(chat_id, mute_id, false, false, false, false, false, false, true,false);
+        ac.ChatPermissions(chat_id, user_id, false, false, false, false, false, false, true,false);
 
         ac.SendMessage(chat_id, new Unicodekor().uniToKor(name) + "님을 뮤트하였습니다.");
     }
 
-    void unmute(String name) throws Exception {
-        long usage_id = jObject.getJSONObject("message").getJSONObject("from").getLong("id");
-        long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
-        long mute_id;
-        if(name.charAt(0) == '@'){
-            mute_id = info.get(chat_id).getUserid(name.replaceAll("@", ""));
-        }else {
-            mute_id = jObject.getJSONObject("message").getJSONArray("entities").getJSONObject(1).getJSONObject("user").getLong("id");
-        }
+    void unmute(long user_id, long usage_id, long chat_id, String name) throws Exception {
         Action ac = new Action();
 
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
@@ -104,21 +79,16 @@ public class Command {
             return;
         }
 
-        ac.ChatPermissions(chat_id, mute_id, true, true, true, true, true, true, true, true);
+        ac.ChatPermissions(chat_id, user_id, true, true, true, true, true, true, true, true);
         ac.SendMessage(chat_id, new Unicodekor().uniToKor(name) + "님을 뮤트 해제하였습니다.");
     }
 
-    void RSP(String input) throws Exception{
-
-    }
-    void getChat(String name) throws Exception{
-        Long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
+    void getChat(long chat_id, String name) throws Exception{
         Action ac = new Action();
         JSONObject object = ac.getChat(name);
         System.out.println(object.toString());
     }
-    void Saveinfo(JSONObject data){
-        long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
+    void Saveinfo(long chat_id, JSONObject data){
         long user_id = data.getLong("id");
         String user_name = data.getString("username");
         if(Command.info.get(chat_id) == null) {
@@ -127,10 +97,8 @@ public class Command {
             Command.info.put(chat_id, info);
         }
     }
-    void banChat(String text) throws Exception{
-        long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
+    void banChat(long chat_id,long usage_id, String text) throws Exception{
         Action ac = new Action();
-        long usage_id = jObject.getJSONObject("message").getJSONObject("from").getLong("id");
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
         if(!(status.equals("creator") || status.equals("administrator"))){
             ac.SendMessage(chat_id, "관리자 이상의 등급만 사용할 수 있습니다.");
@@ -160,10 +128,8 @@ public class Command {
         Action.Write_banned();
         ac.SendMessage(chat_id, "성공");
     }
-    void unbanChat(String text) throws Exception{
-        long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
+    void unbanChat(long chat_id, long usage_id, String text) throws Exception{
         Action ac = new Action();
-        long usage_id = jObject.getJSONObject("message").getJSONObject("from").getLong("id");
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
         if(!(status.equals("creator") || status.equals("administrator"))){
             ac.SendMessage(chat_id, "관리자 이상의 등급만 사용할 수 있습니다.");
@@ -231,8 +197,7 @@ public class Command {
         if(check[0])
             ac.delete_massage(chat_id, message_id);
     }
-    void banned_list(){
-        long chat_id = jObject.getJSONObject("message").getJSONObject("chat").getLong("id");
+    void banned_list(long chat_id){
         ArrayList<ArrayList<String>> list = banned.get(chat_id);
         Action ac = new Action();
         StringBuilder sb = new StringBuilder();
