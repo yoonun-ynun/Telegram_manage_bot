@@ -70,7 +70,7 @@ public class Command {
         ac.SendMessage(chat_id, new Unicodekor().uniToKor(name) + "님을 뮤트하였습니다.");
     }
 
-    void unmute(long user_id, long usage_id, long chat_id, String name) throws Exception {
+    void unmute(long user_id, long chat_id, long usage_id, String name) throws Exception {
         Action ac = new Action();
 
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
