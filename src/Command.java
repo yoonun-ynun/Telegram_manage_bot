@@ -90,6 +90,8 @@ public class Command {
     }
     void Saveinfo(long chat_id, JSONObject data){
         long user_id = data.getLong("id");
+        if(!data.has("username"))
+            return;
         String user_name = data.getString("username");
         if(Command.info.get(chat_id) == null) {
             Chatinfo info = new Chatinfo();
