@@ -39,6 +39,7 @@ public class Telegram implements HttpHandler{
                 response.write(ob.toString().getBytes());
                 response.flush();
 
+
                 //Webhook 입력
                 StringBuilder sb = new StringBuilder();
                 String line;
@@ -53,6 +54,7 @@ public class Telegram implements HttpHandler{
 
                 JSONObject jObject = new JSONObject(sb.toString());
                 Command cmd = new Command();
+                Action ac = new Action();
 
                 //기본 정보
                 long chat_id;
@@ -86,10 +88,13 @@ public class Telegram implements HttpHandler{
                     String set_name = jObject.getJSONObject("message").getJSONObject("sticker").getString("set_name");
                     cmd.check_sticker_ban(unique_id, set_name, chat_id,usage_id,  key);
                 }else if(jObject.getJSONObject("message").has("photo")){
-                    String unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(0).getString("file_unique_id");
-                    cmd.check_sticker_ban(unique_id, "", chat_id, usage_id, key);
-                    unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(1).getString("file_unique_id");
-                    cmd.check_sticker_ban(unique_id, "", chat_id, usage_id, key);
+                    JSONArray photo = jObject.getJSONObject("message").getJSONArray("photo");
+                    int length = photo.length();
+                    String[] unique_ids = new String[length];
+                    for(int i = 0;i<length;i++){
+                        unique_ids[i] = photo.getJSONObject(i).getString("file_unique_id");
+                    }
+                    cmd.check_photo_ban(unique_ids, key, chat_id, usage_id);
                 }
                 else{
                     cmd.check_banned(message, key, chat_id, usage_id);
@@ -191,10 +196,18 @@ public class Telegram implements HttpHandler{
                             check.put(usage_id, "scaling " + message.substring(11));
                         }
                         if(command.equals("/banphoto")){
-                            check.put(usage_id, "photo");
+                            if(jObject.getJSONObject("message").has("reply_to_message")){
+                                JSONArray photo = jObject.getJSONObject("message").getJSONObject("reply_to_message").getJSONArray("photo");
+                                int length = photo.length();
+                                String[] unique_ids = new String[length];
+                                for(int i = 0;i<length;i++){
+                                    unique_ids[i] = photo.getJSONObject(i).getString("file_unique_id");
+                                }
+                                cmd.ban_photo(unique_ids, chat_id, usage_id);
+                            }
                         }
                         if(command.equals("/unbanphoto")){
-                            check.put(usage_id, "un_photo");
+
                         }
 
                     }

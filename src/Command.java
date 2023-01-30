@@ -369,17 +369,17 @@ public class Command {
         ac.SendMessage(chat_id, "성공");
         Action.Write_banned();
     }
-    void check_sticker_ban(String unique_id, String set_name, long chat_id,long usage_id, long message_id) throws Exception{
+    boolean check_sticker_ban(String unique_id, String set_name, long chat_id,long usage_id, long message_id) throws Exception{
         Action ac = new Action();
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
         if((status.equals("creator") || status.equals("administrator"))){
-            return;
+            return true;
         }
         final boolean[] check = {false};
         final int[] count = {0};
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
         if(ban_list == null)
-            return;
+            return false;
         ExecutorService service = Executors.newFixedThreadPool(ban_list.size()*2);
         for (int i = 0; i < ban_list.size(); i++) {
             Runnable run = new Runnable() {
@@ -409,9 +409,14 @@ public class Command {
                 break;
             }
         }
-        if(check[0])
+        if(check[0]) {
             ac.delete_massage(chat_id, message_id);
+            return true;
+        }
+        return false;
     }
+
+
 
     void Upscaling(long Chat_id, String file_id, String Style, String scale) throws Exception{
         Action ac = new Action();
@@ -436,7 +441,78 @@ public class Command {
             check = true;
         }
     }
+    void ban_photo(String[] unique_ids, long chat_id, long usage_id) throws Exception{
+        Action ac = new Action();
+        String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
+        if(!(status.equals("creator") || status.equals("administrator"))){
+            ac.SendMessage(chat_id, "관리자 이상의 등급만 사용할 수 있습니다.");
+            return;
+        }
+        for(String unique_id : unique_ids) {
+            if (banned.get(chat_id) == null) {
+                ArrayList<ArrayList<String>> list = new ArrayList<>();
+                ArrayList<String> ban_list = new ArrayList<>();
+                ban_list.add(unique_id);
+                list.add(ban_list);
+                banned.put(chat_id, list);
+            } else {
+                ArrayList<ArrayList<String>> list = banned.get(chat_id);
+                if (list.get(list.size() - 1).size() >= 10) {
+                    ArrayList<String> ban_list = new ArrayList<>();
+                    ban_list.add(unique_id);
+                    list.add(ban_list);
+                } else {
+                    ArrayList<String> ban_list = list.get(list.size() - 1);
+                    ban_list.add(unique_id);
+                    list.remove(list.size() - 1);
+                    list.add(ban_list);
+                }
+                banned.remove(chat_id);
+                banned.put(chat_id, list);
+            }
+        }
+        Action.Write_banned();
+        ac.SendMessage(chat_id, "성공");
+    }
+
+    void check_photo_ban(String[] unique_ids, long message_id, long chat_id, long usage_id) throws Exception{
+        Action ac = new Action();
+        String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
+        if((status.equals("creator") || status.equals("administrator"))){
+            return;
+        }
+        final boolean[] check = {false};
+        ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
+        if(ban_list == null)
+            return;
+        ExecutorService service = Executors.newFixedThreadPool(ban_list.size());
+        for(int j = 0;j<unique_ids.length;j++) {
+            for (int i = 0; i < ban_list.size(); i++) {
+                int finalJ = j;
+                int finalI = i;
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        ArrayList<String> list = ac.found_banned(ban_list.get(finalI), unique_ids[finalJ], false, false);
+                        if (list != null)
+                            check[0] = true;
+                    }
+                };
+                service.submit(run);
+            }
+        }
+        service.shutdown();
+        while (!service.awaitTermination(10, TimeUnit.MILLISECONDS)){
+            if(check[0]){
+                service.shutdownNow();
+                break;
+            }
+        }
+        if(check[0])
+            ac.delete_massage(chat_id, message_id);
+    }
 }
+
 
 class upscale_Thread extends Thread{
     public void run(){
