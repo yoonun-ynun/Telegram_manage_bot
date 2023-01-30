@@ -482,7 +482,6 @@ public class Command {
             ac.SendMessage(chat_id, "관리자 이상의 등급만 사용할 수 있습니다.");
             return;
         }
-        final boolean[] check = {false};
         final int[] count = {0};
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
         ExecutorService service = Executors.newFixedThreadPool(ban_list.size());
@@ -499,7 +498,6 @@ public class Command {
                             if (!list.isEmpty()) {
                                 ban_list.add(num, list);
                             }
-                            check[0] = true;
                         }
                     }
                 };
@@ -508,10 +506,7 @@ public class Command {
         }
         service.shutdown();
         while (!service.awaitTermination(10, TimeUnit.MILLISECONDS)){
-            if(check[0]){
-                service.shutdownNow();
-                break;
-            }
+
         }
         banned.remove(chat_id);
         if(!ban_list.isEmpty()){
