@@ -484,15 +484,16 @@ public class Command {
         }
         final int[] count = {0};
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
-        ExecutorService service = Executors.newFixedThreadPool(ban_list.size());
-        for(String text : unique_ids) {
-            count[0] = 0;
+        ExecutorService service = Executors.newFixedThreadPool(ban_list.size() * unique_ids.length);
+        for(int j = 0;j<unique_ids.length;j++) {
             for (int i = 0; i < ban_list.size(); i++) {
+                int finalJ = j;
+                int finalI = i;
                 Runnable run = new Runnable() {
                     @Override
                     public void run() {
                         int num = count[0];
-                        ArrayList<String> list = ac.found_banned(ban_list.get(count[0]++), text, true, true);
+                        ArrayList<String> list = ac.found_banned(ban_list.get(finalI), unique_ids[finalJ], true, true);
                         if (list != null) {
                             ban_list.remove(num);
                             if (!list.isEmpty()) {
@@ -526,7 +527,7 @@ public class Command {
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
         if(ban_list == null)
             return;
-        ExecutorService service = Executors.newFixedThreadPool(ban_list.size());
+        ExecutorService service = Executors.newFixedThreadPool(ban_list.size() * unique_ids.length);
         for(int j = 0;j<unique_ids.length;j++) {
             for (int i = 0; i < ban_list.size(); i++) {
                 int finalJ = j;
