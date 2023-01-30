@@ -179,6 +179,8 @@ public class Command {
         final boolean[] check = {false};
         final int[] count = {0};
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
+        if(ban_list == null)
+            return;
         ExecutorService service = Executors.newFixedThreadPool(ban_list.size());
         for (int i = 0; i < ban_list.size(); i++) {
             Runnable run = new Runnable() {
@@ -373,6 +375,8 @@ public class Command {
         final boolean[] check = {false};
         final int[] count = {0};
         ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
+        if(ban_list == null)
+            return;
         ExecutorService service = Executors.newFixedThreadPool(ban_list.size()*2);
         for (int i = 0; i < ban_list.size(); i++) {
             Runnable run = new Runnable() {

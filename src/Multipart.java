@@ -6,10 +6,10 @@ import java.util.LinkedList;
 
 public class Multipart {
     Multipart(String Address){this.Address = Address;}
-    String Address;
-    LinkedList<ArrayList<Object>> map = new LinkedList<>();
-    final String boundary= "yoonunbotjdkfldjsaf";
-    final String end = "\r\n";
+    private final String Address;
+    private final LinkedList<ArrayList<Object>> map = new LinkedList<>();
+    private final String boundary= "yoonunbotjdkfldjsaf";
+    private final String end = "\r\n";
     StringBuilder start() throws Exception{
         FileInputStream in;
         final String two_hyphen = "--";

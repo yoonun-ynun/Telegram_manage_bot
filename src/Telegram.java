@@ -120,6 +120,7 @@ public class Telegram implements HttpHandler{
                     check.remove(usage_id);
                 }
 
+
                 //명령어 사용시
                 if(jObject.getJSONObject("message").has("entities")){
                     JSONArray jArray = jObject.getJSONObject("message").getJSONArray("entities");
