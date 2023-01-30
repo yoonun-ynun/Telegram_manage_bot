@@ -475,6 +475,52 @@ public class Command {
         ac.SendMessage(chat_id, "성공");
     }
 
+    void unban_photo(String[] unique_ids,long chat_id, long usage_id) throws Exception{
+        Action ac = new Action();
+        String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
+        if(!(status.equals("creator") || status.equals("administrator"))){
+            ac.SendMessage(chat_id, "관리자 이상의 등급만 사용할 수 있습니다.");
+            return;
+        }
+        final boolean[] check = {false};
+        final int[] count = {0};
+        ArrayList<ArrayList<String>> ban_list = banned.get(chat_id);
+        ExecutorService service = Executors.newFixedThreadPool(ban_list.size());
+        for(String text : unique_ids) {
+            count[0] = 0;
+            for (int i = 0; i < ban_list.size(); i++) {
+                Runnable run = new Runnable() {
+                    @Override
+                    public void run() {
+                        int num = count[0];
+                        ArrayList<String> list = ac.found_banned(ban_list.get(count[0]++), text, true, true);
+                        if (list != null) {
+                            ban_list.remove(num);
+                            if (!list.isEmpty()) {
+                                ban_list.add(num, list);
+                            }
+                            check[0] = true;
+                        }
+                    }
+                };
+                service.submit(run);
+            }
+        }
+        service.shutdown();
+        while (!service.awaitTermination(10, TimeUnit.MILLISECONDS)){
+            if(check[0]){
+                service.shutdownNow();
+                break;
+            }
+        }
+        banned.remove(chat_id);
+        if(!ban_list.isEmpty()){
+            banned.put(chat_id, ban_list);
+        }
+        ac.SendMessage(chat_id, "성공");
+        Action.Write_banned();
+    }
+
     void check_photo_ban(String[] unique_ids, long message_id, long chat_id, long usage_id) throws Exception{
         Action ac = new Action();
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");

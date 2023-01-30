@@ -207,7 +207,15 @@ public class Telegram implements HttpHandler{
                             }
                         }
                         if(command.equals("/unbanphoto")){
-
+                            if(jObject.getJSONObject("message").has("reply_to_message")){
+                                JSONArray photo = jObject.getJSONObject("message").getJSONObject("reply_to_message").getJSONArray("photo");
+                                int length = photo.length();
+                                String[] unique_ids = new String[length];
+                                for(int i = 0;i<length;i++){
+                                    unique_ids[i] = photo.getJSONObject(i).getString("file_unique_id");
+                                }
+                                cmd.unban_photo(unique_ids, chat_id, usage_id);
+                            }
                         }
 
                     }
