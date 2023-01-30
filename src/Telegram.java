@@ -85,7 +85,13 @@ public class Telegram implements HttpHandler{
                     String unique_id = jObject.getJSONObject("message").getJSONObject("sticker").getJSONObject("thumb").getString("file_unique_id");
                     String set_name = jObject.getJSONObject("message").getJSONObject("sticker").getString("set_name");
                     cmd.check_sticker_ban(unique_id, set_name, chat_id,usage_id,  key);
-                }else{
+                }else if(jObject.getJSONObject("message").has("photo")){
+                    String unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(0).getString("file_unique_id");
+                    cmd.check_sticker_ban(unique_id, "", chat_id, usage_id, key);
+                    unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(1).getString("file_unique_id");
+                    cmd.check_sticker_ban(unique_id, "", chat_id, usage_id, key);
+                }
+                else{
                     cmd.check_banned(message, key, chat_id, usage_id);
                 }
 
@@ -116,6 +122,18 @@ public class Telegram implements HttpHandler{
                             file_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(3).getString("file_id");
                         }
                         cmd.Upscaling(chat_id, file_id, check.get(usage_id).split(" ")[1], check.get(usage_id).split(" ")[2]);
+                    }
+                    if(command.equals("photo")){
+                        String unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(0).getString("file_unique_id");
+                        cmd.ban_sticker(unique_id, chat_id, usage_id);
+                        unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(1).getString("file_unique_id");
+                        cmd.ban_sticker(unique_id, chat_id, usage_id);
+                    }
+                    if(command.equals("un_photo")){
+                        String unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(0).getString("file_unique_id");
+                        cmd.unban_sticker(unique_id, chat_id, usage_id);
+                        unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(1).getString("file_unique_id");
+                        cmd.unban_sticker(unique_id, chat_id, usage_id);
                     }
                     check.remove(usage_id);
                 }
@@ -171,6 +189,12 @@ public class Telegram implements HttpHandler{
                         }
                         if(command.equals("/upscaling")){
                             check.put(usage_id, "scaling " + message.substring(11));
+                        }
+                        if(command.equals("/banphoto")){
+                            check.put(usage_id, "photo");
+                        }
+                        if(command.equals("/unbanphoto")){
+                            check.put(usage_id, "un_photo");
                         }
 
                     }
