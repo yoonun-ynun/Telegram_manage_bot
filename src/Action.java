@@ -255,7 +255,7 @@ public class Action {
         Multipart multi = new Multipart(Address);
         multi.input_text("id", setting.getString("waifu_id"));
         multi.input_text("style", Style);
-        multi.input_text("noise", "2");
+        multi.input_text("noise", "3");
         multi.input_text("scale", scale);
         multi.input_text("comp", "0");
         multi.input_text("apikey", setting.getString("waifu_api"));
@@ -407,7 +407,7 @@ public class Action {
             String check_text = banned_text.toLowerCase();
             text = text.toLowerCase();
             if(!equals){
-                if(text.contains(check_text)){
+                if(String_Contain(text, check_text)){
                     if(Remove){
                         banned.remove(banned_text);
                         return banned;
@@ -427,5 +427,14 @@ public class Action {
             }
         }
         return null;
+    }
+    boolean String_Contain(String text1, String text2){
+        String[] text_arr = text2.split("");
+        for (String s : text_arr) {
+            if (!text1.contains(s)) {
+                return false;
+            }
+        }
+        return true;
     }
 }

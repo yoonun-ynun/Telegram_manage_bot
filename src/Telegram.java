@@ -61,7 +61,6 @@ public class Telegram implements HttpHandler{
                 long usage_id;
                 long user_id = 0;
                 String message = "";
-                String status = "";
                 long key;
 
                 //메시지 수정일 경우
@@ -124,7 +123,9 @@ public class Telegram implements HttpHandler{
                         if(jObject.getJSONObject("message").has("document")) {
                             file_id = jObject.getJSONObject("message").getJSONObject("document").getString("file_id");
                         }else if(jObject.getJSONObject("message").has("photo")){
-                            file_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(3).getString("file_id");
+                            JSONArray photo = jObject.getJSONObject("message").getJSONArray("photo");
+                            int length = photo.length();
+                            file_id = photo.getJSONObject(length-1).getString("file_id");
                         }
                         cmd.Upscaling(chat_id, file_id, check.get(usage_id).split(" ")[1], check.get(usage_id).split(" ")[2]);
                     }
