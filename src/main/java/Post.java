@@ -21,7 +21,6 @@ public class Post {
         con.setDoOutput(true);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
         bw.write(data.toString());
-        System.out.println(data.toString());
         bw.flush();
         bw.close();
 
@@ -34,13 +33,11 @@ public class Post {
             br = new BufferedReader(new InputStreamReader(con.getInputStream()));
             while ((line = br.readLine()) != null)
                 result.append(line).append('\n');
-            System.out.println(result);
             return result;
         }else{
             br = new BufferedReader(new InputStreamReader(con.getErrorStream()));
             while((line = br.readLine()) != null)
                 result.append(line).append('\n');
-            System.out.println(result);
             return result;
         }
     }

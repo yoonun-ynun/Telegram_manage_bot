@@ -81,23 +81,6 @@ public class Telegram implements HttpHandler{
                 }
                 System.out.println(key);
 
-                //밴 되어있는 메시지인지 확인
-                if(jObject.getJSONObject("message").has("sticker")){
-                    String unique_id = jObject.getJSONObject("message").getJSONObject("sticker").getJSONObject("thumb").getString("file_unique_id");
-                    String set_name = jObject.getJSONObject("message").getJSONObject("sticker").getString("set_name");
-                    cmd.check_sticker_ban(unique_id, set_name, chat_id,usage_id,  key);
-                }else if(jObject.getJSONObject("message").has("photo")){
-                    JSONArray photo = jObject.getJSONObject("message").getJSONArray("photo");
-                    int length = photo.length();
-                    String[] unique_ids = new String[length];
-                    for(int i = 0;i<length;i++){
-                        unique_ids[i] = photo.getJSONObject(i).getString("file_unique_id");
-                    }
-                    cmd.check_photo_ban(unique_ids, key, chat_id, usage_id);
-                }
-                else{
-                    cmd.check_banned(message, key, chat_id, usage_id);
-                }
 
                 //명령어 사용 후 입력받을 때
                 if(check.get(usage_id) != null){
@@ -220,6 +203,33 @@ public class Telegram implements HttpHandler{
                         }
 
                     }
+                }else {
+                    if(!message.equals("")){
+                        if(message.split(" ")[0].equals("gpt")){
+                            String result = ac.chatgpt(message.substring(4));
+                            ac.SendReply(chat_id,key,result.substring(result.indexOf("\n\n")+1));
+                        }else if(message.split(" ")[0].equals("gptimg")){
+                            File result = ac.gptImage(message.substring(7));
+                            ac.SendDocument(chat_id, result);
+                        }
+                    }
+                }
+                //밴 되어있는 메시지인지 확인
+                if(jObject.getJSONObject("message").has("sticker")){
+                    String unique_id = jObject.getJSONObject("message").getJSONObject("sticker").getJSONObject("thumb").getString("file_unique_id");
+                    String set_name = jObject.getJSONObject("message").getJSONObject("sticker").getString("set_name");
+                    cmd.check_sticker_ban(unique_id, set_name, chat_id,usage_id,  key);
+                }else if(jObject.getJSONObject("message").has("photo")){
+                    JSONArray photo = jObject.getJSONObject("message").getJSONArray("photo");
+                    int length = photo.length();
+                    String[] unique_ids = new String[length];
+                    for(int i = 0;i<length;i++){
+                        unique_ids[i] = photo.getJSONObject(i).getString("file_unique_id");
+                    }
+                    cmd.check_photo_ban(unique_ids, key, chat_id, usage_id);
+                }
+                else{
+                    cmd.check_banned(message, key, chat_id, usage_id);
                 }
 
 

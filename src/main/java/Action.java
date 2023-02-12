@@ -1,3 +1,8 @@
+import com.theokanning.openai.OpenAiService;
+import com.theokanning.openai.completion.CompletionRequest;
+import com.theokanning.openai.completion.CompletionResult;
+import com.theokanning.openai.image.CreateImageRequest;
+import com.theokanning.openai.image.ImageResult;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -50,6 +55,15 @@ public class Action {
             e.printStackTrace();
         }
         return 0;
+    }
+
+    void SendReply(long id, long message_id,String text) throws Exception{
+        String Address = this.Address + "sendMessage";
+        Post post = new Post(Address);
+        post.input_data("chat_id", Long.toString(id));
+        post.input_data("text", text);
+        post.input_data("reply_to_message_id", Long.toString(message_id));
+        post.start();
     }
 
     void SendPhoto(Long id, String image){
@@ -436,5 +450,55 @@ public class Action {
             }
         }
         return true;
+    }
+
+    String chatgpt(String text){
+        CompletionRequest request = CompletionRequest.builder()
+                .prompt(text)
+                .model("text-davinci-003")
+                .echo(true)
+                .maxTokens(1024)
+                .build();
+        CompletionResult result =  Main.AiService.createCompletion(request);
+        result.getChoices().forEach(System.out::println);
+        return result.getChoices().get(0).getText();
+    }
+
+    File gptImage(String text) throws Exception{
+        CreateImageRequest request = CreateImageRequest.builder()
+                .prompt(text)
+                .build();
+        ImageResult result = Main.AiService.createImage(request);
+        result.getData().forEach(System.out::println);
+        String url =  result.getData().get(0).getUrl();
+        String path = user_path + "/gptimg/";
+        return downloadFile(url, path);
+    }
+
+    File downloadFile(String Address,String path) throws Exception{
+        File result = new File(path, "gpt" + "." + Address.split("\\.")[3]);
+
+        File file_dir = result.getParentFile();
+        if(!file_dir.exists())
+            file_dir.mkdir();
+
+
+        URL url = new URL(Address);
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+
+        InputStream is = con.getInputStream();
+        FileOutputStream outputStream = new FileOutputStream(result);
+
+        final int BUFFER_SIZE = 4096;
+        int bytesRead;
+        byte[] buffer = new byte[BUFFER_SIZE];
+        while ((bytesRead = is.read(buffer)) != -1){
+            outputStream.write(buffer, 0, bytesRead);
+        }
+        scale_num++;
+        is.close();
+        outputStream.close();
+
+        return result;
     }
 }

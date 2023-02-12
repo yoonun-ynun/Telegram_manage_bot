@@ -2,8 +2,10 @@ import java.io.*;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.security.KeyStore;
+import java.time.Duration;
 
 import com.sun.net.httpserver.*;
+import com.theokanning.openai.OpenAiService;
 import org.json.JSONObject;
 
 import javax.net.ssl.*;
@@ -11,6 +13,7 @@ import javax.net.ssl.*;
 
 public class Main {
     public static JSONObject setting = new JSONObject();
+    public static OpenAiService AiService;
     public static void main(String[] args) {
         try {
             BufferedWriter bw;
@@ -18,14 +21,14 @@ public class Main {
             File file = new File("config.txt");
             if (!file.exists()) {
                 bw = new BufferedWriter(new FileWriter(file));
-                bw.write("hostname: 0.0.0.0\nkey_path: \nkey_password: \nTelegram_token: \nwaifu_id: \nwaifu_api: ");
+                bw.write("hostname: 0.0.0.0\nkey_path: \nkey_password: \nTelegram_token: \nchatgpt_api: ");
                 bw.flush();
                 System.out.println("config.txt 파일을 확인 해 주세요");
                 System.out.println("key 파일은 jks만 지원합니다.");
                 return;
             }
             br = new BufferedReader(new FileReader(file));
-            String[] setting = new String[6];
+            String[] setting = new String[5];
             int count = 0;
             String line;
             while ((line = br.readLine()) != null){
@@ -43,6 +46,7 @@ public class Main {
                     Main.setting.put(result.split(":")[0], "");
                 }
             }
+            Main.AiService = new OpenAiService(Main.setting.getString("chatgpt_api"), Duration.ofSeconds(1800));
             if(Main.setting.getString("key_path").length() == 0 || Main.setting.getString("key_password").length() == 0 || Main.setting.getString("Telegram_token").length() == 0 ){
                 System.out.println("config.txt의 key_path, key_password, Telegram_token 값을 채워주세요");
                 return;
