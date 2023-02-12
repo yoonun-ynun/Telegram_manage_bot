@@ -472,11 +472,11 @@ public class Action {
         result.getData().forEach(System.out::println);
         String url =  result.getData().get(0).getUrl();
         String path = user_path + "/gptimg/";
-        return downloadFile(url, path);
+        return downloadFile(url, path, "gpt.png");
     }
 
-    File downloadFile(String Address,String path) throws Exception{
-        File result = new File(path, "gpt" + "." + Address.split("\\.")[3]);
+    File downloadFile(String Address,String path, String filename) throws Exception{
+        File result = new File(path, filename);
 
         File file_dir = result.getParentFile();
         if(!file_dir.exists())
