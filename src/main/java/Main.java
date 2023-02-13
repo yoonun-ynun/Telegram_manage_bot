@@ -5,6 +5,7 @@ import java.security.KeyStore;
 import java.time.Duration;
 
 import com.sun.net.httpserver.*;
+import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.OpenAiService;
 import org.json.JSONObject;
 
@@ -47,6 +48,7 @@ public class Main {
                 }
             }
             Main.AiService = new OpenAiService(Main.setting.getString("chatgpt_api"), Duration.ofSeconds(1800));
+
             if(Main.setting.getString("key_path").length() == 0 || Main.setting.getString("key_password").length() == 0 || Main.setting.getString("Telegram_token").length() == 0 ){
                 System.out.println("config.txt의 key_path, key_password, Telegram_token 값을 채워주세요");
                 return;

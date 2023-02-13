@@ -10,6 +10,7 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -453,11 +454,17 @@ public class Action {
     }
 
     String chatgpt(String text){
+        ArrayList<String> stop = new ArrayList<>();
+        stop.add("Human:");
+        stop.add("AI:");
         CompletionRequest request = CompletionRequest.builder()
                 .prompt(text)
                 .model("text-davinci-003")
                 .echo(true)
-                .maxTokens(1024)
+                .maxTokens(2048)
+                .temperature((double)0)
+                .frequencyPenalty(0.2)
+                .stop(stop)
                 .build();
         CompletionResult result =  Main.AiService.createCompletion(request);
         result.getChoices().forEach(System.out::println);

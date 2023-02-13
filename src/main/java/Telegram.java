@@ -9,6 +9,7 @@ import java.util.HashMap;
 
 public class Telegram implements HttpHandler{
     static HashMap<Long, String> check = new HashMap<>();
+    static HashMap<Long, String> gptstr = new HashMap<>();
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String request_method = exchange.getRequestMethod();
@@ -206,8 +207,13 @@ public class Telegram implements HttpHandler{
                 }else {
                     if(!message.equals("")){
                         if(message.split(" ")[0].equals("gpt")){
-                            String result = ac.chatgpt(message.substring(4));
-                            ac.SendReply(chat_id,key,result.substring(result.indexOf("\n\n")+1));
+                            StringBuilder gpt = new StringBuilder();
+                            if(gptstr.containsKey(chat_id)){
+                                gpt.append(gptstr.get(chat_id));
+                            }
+                            gpt.append("Human:").append(message.substring(4)).append("\n").append("AI:");
+                            String result = ac.chatgpt(gpt.toString());
+                            ac.SendReply(chat_id,key,result.substring(result.lastIndexOf("AI:")+1));
                         }else if(message.split(" ")[0].equals("gptimg")){
                             File result = ac.gptImage(message.substring(7));
                             ac.SendDocument(chat_id, result);
