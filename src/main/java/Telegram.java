@@ -210,6 +210,22 @@ public class Telegram implements HttpHandler{
                             }
                             gptstr.remove(chat_id);
                         }
+                        if(command.equals("/setgpt")){
+                            String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
+                            if(!(status.equals("creator"))){
+                                ac.SendMessage(chat_id, "소유자 이상의 등급만 사용할 수 있습니다.");
+                                return;
+                            }
+                            StringBuilder gpt = new StringBuilder();
+                            if(gptstr.containsKey(chat_id)){
+                                gpt.append(gptstr.get(chat_id));
+                            }
+                            gpt.append("Human:").append(message.substring(8)).append("\n").append("AI:");
+                            String result = ac.chatgpt(gpt.toString());
+                            ac.SendReply(chat_id,key,result.substring(result.lastIndexOf("AI:")+3));
+                            gptstr.remove(chat_id);
+                            gptstr.put(chat_id, result);
+                        }
                     }
                 }else {
                     if(!message.equals("")){
@@ -221,8 +237,6 @@ public class Telegram implements HttpHandler{
                             gpt.append("Human:").append(message.substring(4)).append("\n").append("AI:");
                             String result = ac.chatgpt(gpt.toString());
                             ac.SendReply(chat_id,key,result.substring(result.lastIndexOf("AI:")+3));
-                            gptstr.remove(chat_id);
-                            gptstr.put(chat_id, result + "\n");
                         }else if(message.split(" ")[0].equals("gptimg")){
                             File result = ac.gptImage(message.substring(7));
                             ac.SendDocument(chat_id, result);
