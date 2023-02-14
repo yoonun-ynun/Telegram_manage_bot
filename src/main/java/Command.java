@@ -535,7 +535,7 @@ public class Command {
                 Runnable run = new Runnable() {
                     @Override
                     public void run() {
-                        ArrayList<String> list = ac.found_banned(ban_list.get(finalI), unique_ids[finalJ], false, false);
+                        ArrayList<String> list = ac.found_banned(ban_list.get(finalI), unique_ids[finalJ], true, false);
                         if (list != null)
                             check[0] = true;
                     }

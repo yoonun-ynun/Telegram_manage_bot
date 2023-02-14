@@ -209,6 +209,7 @@ public class Telegram implements HttpHandler{
                                 return;
                             }
                             gptstr.remove(chat_id);
+                            ac.SendMessage(chat_id, "설정이 초기화 되었습니다.");
                         }
                         if(command.equals("/setgpt")){
                             String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
@@ -224,7 +225,7 @@ public class Telegram implements HttpHandler{
                             String result = ac.chatgpt(gpt.toString());
                             ac.SendReply(chat_id,key,result.substring(result.lastIndexOf("AI:")+3));
                             gptstr.remove(chat_id);
-                            gptstr.put(chat_id, result);
+                            gptstr.put(chat_id, result + "\n");
                         }
                     }
                 }else {
