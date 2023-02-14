@@ -463,6 +463,7 @@ public class Action {
                 .echo(true)
                 .maxTokens(2048)
                 .temperature((double)0)
+                .topP((double)0)
                 .frequencyPenalty(0.2)
                 .stop(stop)
                 .build();
