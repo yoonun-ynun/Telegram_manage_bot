@@ -25,5 +25,4 @@ key_path에는 인증서의 위치, key_password에는 인증서의 비밀번호
 /banset - 스티커 세트를 밴합니다. 봇에 관리자 권한이 필요합니다.<br>
 /unbansticker - 개별 스티커 밴을 해제합니다.<br>
 /unbanset - 스티커 세트 밴을 해제합니다.<br>
-/upscaling - 업스케일링합니다 뒤에는 art/photo와 확대정도가 들어갑니다<br>
 
