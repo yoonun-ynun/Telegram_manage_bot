@@ -102,17 +102,6 @@ public class Telegram implements HttpHandler{
                         String set_name = jObject.getJSONObject("message").getJSONObject("sticker").getString("set_name");
                         cmd.unban_sticker_set(set_name, chat_id, usage_id);
                     }
-                    if(command.equals("scaling")){
-                        String file_id = "";
-                        if(jObject.getJSONObject("message").has("document")) {
-                            file_id = jObject.getJSONObject("message").getJSONObject("document").getString("file_id");
-                        }else if(jObject.getJSONObject("message").has("photo")){
-                            JSONArray photo = jObject.getJSONObject("message").getJSONArray("photo");
-                            int length = photo.length();
-                            file_id = photo.getJSONObject(length-1).getString("file_id");
-                        }
-                        cmd.Upscaling(chat_id, file_id, check.get(usage_id).split(" ")[1], check.get(usage_id).split(" ")[2]);
-                    }
                     if(command.equals("photo")){
                         String unique_id = jObject.getJSONObject("message").getJSONArray("photo").getJSONObject(0).getString("file_unique_id");
                         cmd.ban_sticker(unique_id, chat_id, usage_id);
@@ -226,6 +215,9 @@ public class Telegram implements HttpHandler{
                             ac.SendReply(chat_id,key,result.substring(result.lastIndexOf("AI:")+3));
                             gptstr.remove(chat_id);
                             gptstr.put(chat_id, result + "\n");
+                        }
+                        if(command.equals("/dccon")){
+
                         }
                     }
                 }else {

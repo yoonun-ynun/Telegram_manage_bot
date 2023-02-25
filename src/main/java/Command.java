@@ -418,29 +418,6 @@ public class Command {
 
 
 
-    void Upscaling(long Chat_id, String file_id, String Style, String scale) throws Exception{
-        Action ac = new Action();
-        if(Integer.parseInt(scale) > 10){
-            ac.SendMessage(Chat_id, "1~10사이의 숫자만 선택 가능합니다.");
-            return;
-        }
-        ArrayList<String> setting = new ArrayList<>();
-        int message_id = ac.SendMessage(Chat_id, "이미지 다운로드중");
-        File file = ac.getFile(file_id);
-        ac.Edittext(Chat_id, message_id, "이미지 다운로드 완료");
-        setting.add(file.getAbsolutePath());
-        setting.add(Style);
-        setting.add(scale);
-        setting.add(Long.toString(Chat_id));
-        upscale_list.add(setting);
-        upscale_count++;
-        ac.SendMessage(Chat_id, "대기열에 추가되었습니다. " + upscale_count + "/" + upscale_count);
-        if(!check){
-            upscale_Thread th = new upscale_Thread();
-            th.start();
-            check = true;
-        }
-    }
     void ban_photo(String[] unique_ids, long chat_id, long usage_id) throws Exception{
         Action ac = new Action();
         String status = ac.getChatMember(chat_id, usage_id).getJSONObject("result").getString("status");
@@ -552,49 +529,5 @@ public class Command {
         }
         if(check[0])
             ac.delete_massage(chat_id, message_id);
-    }
-}
-
-
-class upscale_Thread extends Thread{
-    public void run(){
-        Action ac = new Action();
-        int check = 0;
-        while (!Command.upscale_list.isEmpty()){
-            try {
-                ArrayList<String> setting = Command.upscale_list.poll();
-                long chat_id = Long.parseLong(setting.get(3));
-                if(!Command.waifu_on){
-                    ac.start_waifu2x();
-                    ac.SendMessage(chat_id, "waifu2x 시작중");
-                    while (!ac.status_waifu2x().equals("running")){
-                        if(ac.status_waifu2x().equals("failed")){
-                            ac.status_waifu2x();
-                        }
-                        TimeUnit.SECONDS.sleep(5);
-                    }
-                    ac.SendMessage(chat_id, "waifu2x 시작 완료");
-                    Command.waifu_on = true;
-                }
-                File result = ac.upscaling(setting.get(2), setting.get(1), new File(setting.get(0)), check++);
-                if(result == null){
-                    ac.SendMessage(chat_id, "업스케일링에 실패하였습니다.");
-                    Command.waifu_on = false;
-                    Command.upscale_count--;
-                    continue;
-                }
-                ac.SendDocument(chat_id, result);
-                Command.upscale_count--;
-            }catch (Exception e){
-                e.printStackTrace();
-            }
-        }
-        try {
-            ac.stop_waifu2x();
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        Command.waifu_on = false;
-        Command.check = false;
     }
 }
