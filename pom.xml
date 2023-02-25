@@ -20,6 +20,17 @@
             <artifactId>client</artifactId>
             <version>0.9.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.json</groupId>
+            <artifactId>json</artifactId>
+            <version>20220924</version>
+        </dependency>
+        <dependency>
+            <groupId>cat.inspiracio</groupId>
+            <artifactId>rhino-js-engine</artifactId>
+            <version>1.7.7.1</version>
+        </dependency>
+
     </dependencies>
 
 </project>
