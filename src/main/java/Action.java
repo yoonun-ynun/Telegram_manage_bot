@@ -509,4 +509,29 @@ public class Action {
 
         return result;
     }
+
+    void createNewStickerSet(String user_id, String name, String title, File webm_sticker, String emojis)throws Exception{
+        Multipart multi = new Multipart(Address + "createNewStickerSet");
+        multi.input_text("user_id", user_id);
+        multi.input_text("name", name + "_by_" + Main.setting.getString("bot_username"));
+        multi.input_text("title", title);
+        multi.input_file("video/VP9","webm_sticker", webm_sticker);
+        multi.input_text("emojis", emojis);
+        multi.start();
+    }
+
+    void addStickerToSet(String user_id, String name, File webm_sticker, String emojis){
+        Multipart multi = new Multipart(Address + "addStickerToSet");
+        multi.input_text("user_id", user_id);
+        multi.input_text("name", name + "_by_" + Main.setting.getString("bot_username"));
+        multi.input_file("video/VP9","webm_sticker", webm_sticker);
+        multi.input_text("emojis", emojis);
+        multi.start();
+    }
+
+    void sendSticker(String chat_id, File webm_sticker){
+        Multipart multi = new Multipart(Address + "sendSticker");
+        multi.input_text("chat_id", chat_id);
+        multi.input_file("video/VP9","webm_sticker", webm_sticker);
+    }
 }

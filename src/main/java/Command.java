@@ -1,7 +1,10 @@
+import org.checkerframework.checker.units.qual.A;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -416,6 +419,29 @@ public class Command {
         return false;
     }
 
+    void dccon(String chat_id,String number) throws Exception{
+        getDCcon dccon = new getDCcon(number);
+        convwebm webm = new convwebm();
+        Action ac = new Action();
+        String title = dccon.get_title();
+        File locate = dccon.saveAll();
+
+        File[] list = locate.listFiles();
+        for(int i = 0;i<list.length;i++){
+            String path = System.getProperty("user.dir") + "/webm/" + title + "/";
+            Files.createDirectories(Paths.get(path));
+            webm.convert(list[i], new File(path + i + ".webm"));
+        }
+
+        String first_emoji = System.getProperty("user.dir") + "/webm/" + title + "/0.webm";
+        ac.createNewStickerSet(number, title, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/0.webm"), "\uD83E\uDD14");
+        ac.sendSticker(chat_id, new File(first_emoji));
+
+        for(int i = 1;i<list.length;i++){
+            ac.addStickerToSet(number, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/" + i + ".webm"),"\uD83E\uDD14" );
+        }
+
+    }
 
 
     void ban_photo(String[] unique_ids, long chat_id, long usage_id) throws Exception{

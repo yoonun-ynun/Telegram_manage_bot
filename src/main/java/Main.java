@@ -22,14 +22,14 @@ public class Main {
             File file = new File("config.txt");
             if (!file.exists()) {
                 bw = new BufferedWriter(new FileWriter(file));
-                bw.write("hostname: 0.0.0.0\nkey_path: \nkey_password: \nTelegram_token: \nchatgpt_api: ");
+                bw.write("hostname: 0.0.0.0\nkey_path: \nkey_password: \nTelegram_token: \nchatgpt_api: \nbot_username: ");
                 bw.flush();
                 System.out.println("config.txt 파일을 확인 해 주세요");
                 System.out.println("key 파일은 jks만 지원합니다.");
                 return;
             }
             br = new BufferedReader(new FileReader(file));
-            String[] setting = new String[5];
+            String[] setting = new String[6];
             int count = 0;
             String line;
             while ((line = br.readLine()) != null){

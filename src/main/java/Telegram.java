@@ -217,7 +217,7 @@ public class Telegram implements HttpHandler{
                             gptstr.put(chat_id, result + "\n");
                         }
                         if(command.equals("/dccon")){
-
+                            cmd.dccon(Long.toString(chat_id), message.split(" ")[1]);
                         }
                     }
                 }else {
