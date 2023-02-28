@@ -5,6 +5,8 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.HashMap;
 import java.util.concurrent.*;
 
@@ -221,6 +223,13 @@ public class Telegram implements HttpHandler{
                         }
                         if(command.equals("/dccon")){
                             String connum = message.split(" ")[1];
+                            if(Files.exists(Paths.get(System.getProperty("user.dir") + "/dccon/" + connum))){
+                                ac.SendMessage(chat_id, "이미 존재하는 이모지 입니다.");
+                                String first_path = ac.getStickerSet("dccon_num" + connum + "_by_" + Main.setting.getString("bot_username").replaceAll("@", "")).getJSONObject("result").getJSONArray("stickers")
+                                        .getJSONObject(0).getString("file_id");
+                                ac.sendSticker(Long.toString(chat_id), first_path);
+                                return;
+                            }
                             Runnable run = () -> cmd.dccon(usage_id,Long.toString(chat_id), connum);
                             service.submit(run);
                             int th_size = block.size();
