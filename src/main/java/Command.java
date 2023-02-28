@@ -26,6 +26,7 @@ public class Command {
             File file = new File(System.getProperty("user.dir") + "/hitomi/", "hitomi.webp");
             File file_dir = file.getParentFile();
             if(!file_dir.exists())
+            if(!file_dir.exists())
                 file_dir.mkdir();
 
             Action action = new Action();
@@ -419,28 +420,42 @@ public class Command {
         return false;
     }
 
-    void dccon(String chat_id,String number) throws Exception{
-        getDCcon dccon = new getDCcon(number);
-        convwebm webm = new convwebm();
-        Action ac = new Action();
-        String title = dccon.get_title();
-        File locate = dccon.saveAll();
+    void dccon(long user_id,String chat_id,String number){
+        try {
+            getDCcon dccon = new getDCcon(number);
+            convwebm webm = new convwebm();
+            Action ac = new Action();
+            String title = dccon.get_title();
+            File locate = dccon.saveAll();
+            File[] list = locate.listFiles();
 
-        File[] list = locate.listFiles();
-        for(int i = 0;i<list.length;i++){
+            int resume = ac.SendMessage(Long.parseLong(chat_id), "진행중...0/3");
+
             String path = System.getProperty("user.dir") + "/webm/" + title + "/";
             Files.createDirectories(Paths.get(path));
-            webm.convert(list[i], new File(path + i + ".webm"));
+            for (int i = 0; i < list.length; i++) {
+                System.out.println(i + "번째 시작");
+                webm.convert(list[i], new File(path + i + ".webm"));
+                System.out.println(i + "번째 완료");
+            }
+
+            ac.Edittext(Long.parseLong(chat_id), resume, "진행중...1/3");
+
+            ac.createNewStickerSet(Long.toString(user_id), number, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/0.webm"), "\uD83C\uDF5E");
+
+            ac.Edittext(Long.parseLong(chat_id), resume, "진행중...2/3");
+            for (int i = 1; i < list.length; i++) {
+                ac.addStickerToSet(Long.toString(user_id), number, new File(System.getProperty("user.dir") + "/webm/" + title + "/" + i + ".webm"), "\uD83C\uDF5E");
+            }
+
+            ac.Edittext(Long.parseLong(chat_id), resume, "진행완료...3/3");
+            String first_path = ac.getStickerSet("mbot" + number + "_by_" + Main.setting.getString("bot_username").replaceAll("@", "")).getJSONObject("result").getJSONArray("stickers")
+                    .getJSONObject(0).getString("file_id");
+            ac.sendSticker(chat_id, first_path);
+
+        }catch (Exception e){
+            e.printStackTrace();
         }
-
-        String first_emoji = System.getProperty("user.dir") + "/webm/" + title + "/0.webm";
-        ac.createNewStickerSet(number, title, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/0.webm"), "\uD83E\uDD14");
-        ac.sendSticker(chat_id, new File(first_emoji));
-
-        for(int i = 1;i<list.length;i++){
-            ac.addStickerToSet(number, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/" + i + ".webm"),"\uD83E\uDD14" );
-        }
-
     }
 
 

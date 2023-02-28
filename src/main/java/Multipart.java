@@ -1,7 +1,7 @@
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.ProtocolException;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.LinkedList;
 
@@ -35,8 +35,8 @@ public class Multipart {
                 ArrayList<Object> list = map.get(i);
                 String key = (String) list.get(0);
                 if (key.equals("text")) {
-                    out.writeBytes((String) list.get(1));
-                    System.out.println((String) list.get(1));
+                    out.writeBytes((String)list.get(1));
+                    System.out.println((String)list.get(1));
                     if (i == length - 1)
                         out.writeBytes(two_hyphen);
                     out.writeBytes(end);
@@ -50,6 +50,21 @@ public class Multipart {
                         out.write(buffer, 0, bytesRead);
                     }
                     out.writeBytes(end + two_hyphen + boundary);
+                    if (i == length - 1)
+                        out.writeBytes(two_hyphen);
+                    out.writeBytes(end);
+                }
+                if(key.equals("data")){
+                    String data = (String)list.get(1);
+                    out.writeBytes("Content-Disposition: form-data; name=\"" + data.split("split")[0] + "\"" + end + end);
+                    System.out.print("Content-Disposition: form-data; name=\"" + data.split("split")[0] + "\"" + end + end);
+                    if(isNumeric(data.split("split")[1]))
+                        out.writeBytes(data.split("split")[1]);
+                    else
+                        out.write(data.split("split")[1].getBytes(StandardCharsets.UTF_8));
+                    System.out.println(data.split("split")[1]);
+                    out.writeBytes(end + "--" + boundary);
+                    System.out.println(end + "--" + boundary);
                     if (i == length - 1)
                         out.writeBytes(two_hyphen);
                     out.writeBytes(end);
@@ -83,14 +98,13 @@ public class Multipart {
         }
     }
     public void input_text(String name, String data){
-        String input = "Content-Disposition: form-data; name=\"" + name + "\"" + end + end + data + end + "--" + boundary;
         ArrayList<Object> list = new ArrayList<>();
-        list.add("text");
-        list.add(input);
+        list.add("data");
+        list.add(name + "split" + data);
         map.add(list);
     }
-    public void input_file(String Content_Type, String name, File file){
-        String input = "Content-Disposition: form-data; name=\"" + name +  "\"; filename=\"" + file.getName() + "\"" + end +
+    public void input_file(String Content_Type, String name, File file) {
+        String input = "Content-Disposition: form-data; name=\"" + name + "\"; filename=\"" + file.getName() + "\"" + end +
                 "Content-Type:" + Content_Type + end;
         ArrayList<Object> list = new ArrayList<>();
         list.add("text");
@@ -103,5 +117,13 @@ public class Multipart {
     }
     public void setProperty(String key, String data){
         connection.setRequestProperty(key, data);
+    }
+    public static boolean isNumeric(String s) {
+        try {
+            Double.parseDouble(s);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
     }
 }

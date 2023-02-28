@@ -40,13 +40,13 @@ public class getDCcon {
             InputStream is;
             FileOutputStream outputStream;
             for(int i = 0;i<length;i++){
-                String path = detail.getJSONObject(0).getString("path");
+                String path = detail.getJSONObject(i).getString("path");
                 URL url = new URL("https://dcimg5.dcinside.com/dccon.php?no=" + path);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
                 is = con.getInputStream();
                 String disposition = con.getHeaderField("Content-Disposition");
                 String filename = disposition.split("filename=")[1];
-                outputStream = new FileOutputStream(save_path + number + "/" + i + filename.substring(filename.lastIndexOf(".") + 1));
+                outputStream = new FileOutputStream(save_path + number + "/" + i + filename.substring(filename.lastIndexOf(".")));
 
                 final int BUFFER_SIZE = 4096;
                 int bytesRead;

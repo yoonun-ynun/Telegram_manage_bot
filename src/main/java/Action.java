@@ -8,6 +8,8 @@ import org.json.JSONObject;
 import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -513,8 +515,8 @@ public class Action {
     void createNewStickerSet(String user_id, String name, String title, File webm_sticker, String emojis)throws Exception{
         Multipart multi = new Multipart(Address + "createNewStickerSet");
         multi.input_text("user_id", user_id);
-        multi.input_text("name", name + "_by_" + Main.setting.getString("bot_username"));
-        multi.input_text("title", title);
+        multi.input_text("name", "mbot" + name + "_by_" + Main.setting.getString("bot_username").replaceAll("@", ""));
+        multi.input_text("title", title + " by " + Main.setting.getString("bot_username"));
         multi.input_file("video/VP9","webm_sticker", webm_sticker);
         multi.input_text("emojis", emojis);
         multi.start();
@@ -523,15 +525,21 @@ public class Action {
     void addStickerToSet(String user_id, String name, File webm_sticker, String emojis){
         Multipart multi = new Multipart(Address + "addStickerToSet");
         multi.input_text("user_id", user_id);
-        multi.input_text("name", name + "_by_" + Main.setting.getString("bot_username"));
+        multi.input_text("name", "mbot" + name + "_by_" + Main.setting.getString("bot_username").replaceAll("@", ""));
         multi.input_file("video/VP9","webm_sticker", webm_sticker);
         multi.input_text("emojis", emojis);
         multi.start();
     }
 
-    void sendSticker(String chat_id, File webm_sticker){
-        Multipart multi = new Multipart(Address + "sendSticker");
-        multi.input_text("chat_id", chat_id);
-        multi.input_file("video/VP9","webm_sticker", webm_sticker);
+    void sendSticker(String chat_id, String file_id)throws Exception{
+        Post post = new Post(Address + "sendSticker");
+        post.input_data("chat_id", chat_id);
+        post.input_data("sticker", file_id);
+        post.start();
+    }
+    JSONObject getStickerSet(String name) throws Exception{
+        Post post = new Post(Address + "getStickerSet");
+        post.input_data("name", name);
+        return new JSONObject(post.start().toString());
     }
 }

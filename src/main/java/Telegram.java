@@ -13,7 +13,7 @@ public class Telegram implements HttpHandler{
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String request_method = exchange.getRequestMethod();
-        //"일반적으로 사이트를 접속했을때"
+        //일반적으로 사이트를 접속했을때
         if(request_method.equals("GET")){
             OutputStream response = exchange.getResponseBody();
             Headers responseheader = exchange.getResponseHeaders();
@@ -25,7 +25,7 @@ public class Telegram implements HttpHandler{
             response.close();
         }
 
-        //"텔레그램 웹훅 수신"
+        //텔레그램 웹훅 수신
         if(request_method.equals("POST")){
             try {
                 //Response
@@ -217,7 +217,7 @@ public class Telegram implements HttpHandler{
                             gptstr.put(chat_id, result + "\n");
                         }
                         if(command.equals("/dccon")){
-                            cmd.dccon(Long.toString(chat_id), message.split(" ")[1]);
+                            cmd.dccon(usage_id,Long.toString(chat_id), message.split(" ")[1]);
                         }
                     }
                 }else {
