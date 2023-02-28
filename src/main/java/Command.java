@@ -429,7 +429,8 @@ public class Command {
             File locate = dccon.saveAll();
             File[] list = locate.listFiles();
 
-            int resume = ac.SendMessage(Long.parseLong(chat_id), "진행중...0/3");
+            int resume = ac.SendMessage(Long.parseLong(chat_id), "진행중...0/" + list.length + 3);
+            int count = 0;
 
             String path = System.getProperty("user.dir") + "/webm/" + title + "/";
             Files.createDirectories(Paths.get(path));
@@ -437,19 +438,20 @@ public class Command {
                 System.out.println(i + "번째 시작");
                 webm.convert(list[i], new File(path + i + ".webm"));
                 System.out.println(i + "번째 완료");
+                ac.Edittext(Long.parseLong(chat_id), resume, "진행중..." + ++count + "/" + list.length + 3);
             }
 
-            ac.Edittext(Long.parseLong(chat_id), resume, "진행중...1/3");
+            ac.Edittext(Long.parseLong(chat_id), resume, "진행중..." + ++count + "/" + list.length + 3);
 
             ac.createNewStickerSet(Long.toString(user_id), number, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/0.webm"), "\uD83C\uDF5E");
 
-            ac.Edittext(Long.parseLong(chat_id), resume, "진행중...2/3");
+            ac.Edittext(Long.parseLong(chat_id), resume, "진행중..." + ++count + "/" + list.length + 3);
             for (int i = 1; i < list.length; i++) {
                 ac.addStickerToSet(Long.toString(user_id), number, new File(System.getProperty("user.dir") + "/webm/" + title + "/" + i + ".webm"), "\uD83C\uDF5E");
             }
 
-            ac.Edittext(Long.parseLong(chat_id), resume, "진행완료...3/3");
-            String first_path = ac.getStickerSet("mbot" + number + "_by_" + Main.setting.getString("bot_username").replaceAll("@", "")).getJSONObject("result").getJSONArray("stickers")
+            ac.Edittext(Long.parseLong(chat_id), resume, "진행완료..." + (list.length+3) + "/" + list.length + 3);
+            String first_path = ac.getStickerSet("dccon_num" + number + "_by_" + Main.setting.getString("bot_username").replaceAll("@", "")).getJSONObject("result").getJSONArray("stickers")
                     .getJSONObject(0).getString("file_id");
             ac.sendSticker(chat_id, first_path);
 

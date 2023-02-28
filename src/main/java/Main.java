@@ -73,6 +73,7 @@ public class Main {
                     break;
                 }
             }
+            Telegram.service.shutdownNow();
         }catch (Exception e){
             e.printStackTrace();
         }

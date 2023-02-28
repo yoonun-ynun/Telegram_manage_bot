@@ -515,7 +515,7 @@ public class Action {
     void createNewStickerSet(String user_id, String name, String title, File webm_sticker, String emojis)throws Exception{
         Multipart multi = new Multipart(Address + "createNewStickerSet");
         multi.input_text("user_id", user_id);
-        multi.input_text("name", "mbot" + name + "_by_" + Main.setting.getString("bot_username").replaceAll("@", ""));
+        multi.input_text("name", "dccon_num" + name + "_by_" + Main.setting.getString("bot_username").replaceAll("@", ""));
         multi.input_text("title", title + " by " + Main.setting.getString("bot_username"));
         multi.input_file("video/VP9","webm_sticker", webm_sticker);
         multi.input_text("emojis", emojis);
@@ -525,7 +525,7 @@ public class Action {
     void addStickerToSet(String user_id, String name, File webm_sticker, String emojis){
         Multipart multi = new Multipart(Address + "addStickerToSet");
         multi.input_text("user_id", user_id);
-        multi.input_text("name", "mbot" + name + "_by_" + Main.setting.getString("bot_username").replaceAll("@", ""));
+        multi.input_text("name", "dccon_num" + name + "_by_" + Main.setting.getString("bot_username").replaceAll("@", ""));
         multi.input_file("video/VP9","webm_sticker", webm_sticker);
         multi.input_text("emojis", emojis);
         multi.start();

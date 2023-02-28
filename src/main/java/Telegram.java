@@ -6,10 +6,13 @@ import org.json.JSONObject;
 
 import java.io.*;
 import java.util.HashMap;
+import java.util.concurrent.*;
 
 public class Telegram implements HttpHandler{
     static HashMap<Long, String> check = new HashMap<>();
     static HashMap<Long, String> gptstr = new HashMap<>();
+    static LinkedBlockingQueue<Runnable> block = new LinkedBlockingQueue<>();
+    static ExecutorService service = new ThreadPoolExecutor(1, 1, 0L, TimeUnit.MILLISECONDS, block);
     @Override
     public void handle(HttpExchange exchange) throws IOException {
         String request_method = exchange.getRequestMethod();
@@ -217,7 +220,13 @@ public class Telegram implements HttpHandler{
                             gptstr.put(chat_id, result + "\n");
                         }
                         if(command.equals("/dccon")){
-                            cmd.dccon(usage_id,Long.toString(chat_id), message.split(" ")[1]);
+                            String connum = message.split(" ")[1];
+                            Runnable run = () -> cmd.dccon(usage_id,Long.toString(chat_id), connum);
+                            service.submit(run);
+                            int th_size = block.size();
+                            if(th_size>0){
+                                ac.SendMessage(chat_id, "대기열에 추가되었습니다. " + th_size + "/" + th_size);
+                            }
                         }
                     }
                 }else {
