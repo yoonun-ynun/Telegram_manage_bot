@@ -26,3 +26,6 @@ bot_username: 봇의 유저네임(dccon 명령어에 사용됨)
 /unbanset - 스티커 세트 밴을 해제합니다.<br>
 /dccon <디시콘 번호> - 해당 번호에 해당하는 디시콘을 스티커로 변환합니다.
 
+
+봇 주소: https://t.me/yoonmg_bot
+

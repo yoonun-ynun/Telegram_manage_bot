@@ -39,8 +39,7 @@ public class convwebm {
                 FFmpegExecutor executor = new FFmpegExecutor(ffmpeg, ffprobe);
 
                 executor.createTwoPassJob(builder).run();
-
-            }else {
+            }else{
 
                 FFmpegBuilder builder = new FFmpegBuilder()
                         .addInput(ffprobe.probe(input.getAbsolutePath()))
