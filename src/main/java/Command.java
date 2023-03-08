@@ -422,7 +422,7 @@ public class Command {
 
     void dccon(long user_id,String chat_id,String number){
         try {
-            getDCcon dccon = new getDCcon(number);
+            getDCcon dccon = new getDCcon(number, Long.parseLong(chat_id));
             convwebm webm = new convwebm();
             Action ac = new Action();
             String title = dccon.get_title();
