@@ -32,8 +32,7 @@ public class getDCcon {
         this.detail = detail;
     }
 
-    public File saveAll(){
-        try {
+    public File saveAll() throws Exception{
             //디시콘 다운로드
             Files.createDirectories(Paths.get(save_path + number));
             int length = detail.length();
@@ -57,11 +56,6 @@ public class getDCcon {
             }
 
             return new File(save_path + number);
-
-        }catch (IOException e){
-            e.printStackTrace();
-            return null;
-        }
     }
     public String get_title(){
         Unicodekor kor = new Unicodekor();

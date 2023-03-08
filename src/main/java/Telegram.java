@@ -32,6 +32,12 @@ public class Telegram implements HttpHandler{
 
         //텔레그램 웹훅 수신
         if(request_method.equals("POST")){
+            //기본 정보
+            long chat_id = 0;
+            long usage_id;
+            long user_id = 0;
+            String message = "";
+            long key;
             try {
                 //Response
                 JSONObject ob = new JSONObject();
@@ -61,13 +67,6 @@ public class Telegram implements HttpHandler{
                 JSONObject jObject = new JSONObject(sb.toString());
                 Command cmd = new Command();
                 Action ac = new Action();
-
-                //기본 정보
-                long chat_id;
-                long usage_id;
-                long user_id = 0;
-                String message = "";
-                long key;
 
                 //메시지 수정일 경우
                 if(jObject.has("edited_message")){
@@ -230,7 +229,8 @@ public class Telegram implements HttpHandler{
                                 ac.sendSticker(Long.toString(chat_id), first_path);
                                 return;
                             }
-                            Runnable run = () -> cmd.dccon(usage_id,Long.toString(chat_id), connum);
+                            long finalChat_id = chat_id;
+                            Runnable run = () -> cmd.dccon(usage_id,Long.toString(finalChat_id), connum);
                             service.submit(run);
                             int th_size = block.size();
                             if(th_size>0){
@@ -279,6 +279,7 @@ public class Telegram implements HttpHandler{
                 System.out.println();
             }catch (Exception e){
                 e.printStackTrace();
+                new Action().SendMessage(chat_id, "에러가 발생하였습니다\n" + e.getMessage());
             }
 
         }

@@ -10,7 +10,6 @@ import java.io.IOException;
 
 public class convwebm {
     public void convert(File input, File output) throws Exception{
-        try {
             if(output.exists())
                 return;
             FFmpeg ffmpeg = new FFmpeg("/usr/bin/ffmpeg");
@@ -59,8 +58,5 @@ public class convwebm {
 
                 executor.createTwoPassJob(builder).run();
             }
-        }catch (IOException e){
-            e.printStackTrace();
-        }
     }
 }

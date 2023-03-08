@@ -457,6 +457,7 @@ public class Command {
 
         }catch (Exception e){
             e.printStackTrace();
+            new Action().SendMessage(Long.parseLong(chat_id), "에러가 발생하였습니다.\n" + e.getMessage());
         }
     }
 
