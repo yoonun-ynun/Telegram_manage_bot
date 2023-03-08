@@ -3,12 +3,12 @@ import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -456,8 +456,12 @@ public class Command {
             ac.sendSticker(chat_id, first_path);
 
         }catch (Exception e){
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            e.printStackTrace(pw);
+            String sStackTrace = sw.toString(); // stack trace as a string
             e.printStackTrace();
-            new Action().SendMessage(Long.parseLong(chat_id), "에러가 발생하였습니다.\n" + e.getMessage());
+            new Action().SendMessage(Long.parseLong(chat_id), "에러가 발생하였습니다.\n" + sStackTrace);
         }
     }
 

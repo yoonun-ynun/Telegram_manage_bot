@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.*;
 
@@ -278,8 +279,12 @@ public class Telegram implements HttpHandler{
 
                 System.out.println();
             }catch (Exception e){
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                e.printStackTrace(pw);
+                String sStackTrace = sw.toString(); // stack trace as a string
                 e.printStackTrace();
-                new Action().SendMessage(chat_id, "에러가 발생하였습니다\n" + e.getMessage());
+                new Action().SendMessage(chat_id, "에러가 발생하였습니다.\n" + sStackTrace);
             }
 
         }
