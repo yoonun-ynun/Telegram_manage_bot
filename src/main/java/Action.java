@@ -464,9 +464,6 @@ public class Action {
                 .model("text-davinci-003")
                 .echo(true)
                 .maxTokens(2048)
-                .temperature((double)0)
-                .topP((double)0)
-                .frequencyPenalty(0.2)
                 .stop(stop)
                 .build();
         CompletionResult result =  Main.AiService.createCompletion(request);
