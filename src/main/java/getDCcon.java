@@ -17,15 +17,15 @@ public class getDCcon {
     private final JSONArray detail;
 
 
-    public getDCcon(String number, long chat_id){
+    public getDCcon(String number)throws Exception{
         //디시콘 정보 가져오기
         Unicodekor kor = new Unicodekor();
         Multipart multi = new Multipart("https://dccon.dcinside.com/index/package_detail");
         multi.setProperty("x-requested-with", "XMLHttpRequest");
         multi.input_text("package_idx", number);
         String result = multi.start().toString();
-        if(result.equals("error")){
-            new Action().SendMessage(chat_id, "존재하지 않는 디시콘 입니다.");
+        if(result.equals("error\n")){
+            throw new Exception("존재하지 않는 디시콘 입니다.");
         }
         JSONObject info = new JSONObject(result).getJSONObject("info");
         JSONArray detail = new JSONObject(result).getJSONArray("detail");
