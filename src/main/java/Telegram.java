@@ -231,7 +231,7 @@ public class Telegram implements HttpHandler{
                                 return;
                             }
                             long finalChat_id = chat_id;
-                            Runnable run = () -> cmd.dccon(usage_id,Long.toString(finalChat_id), connum);
+                            Runnable run = () -> cmd.dccon(Long.toString(finalChat_id), connum);
                             service.submit(run);
                             int th_size = block.size();
                             if(th_size>0){

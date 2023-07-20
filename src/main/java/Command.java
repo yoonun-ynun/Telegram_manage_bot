@@ -420,7 +420,7 @@ public class Command {
         return false;
     }
 
-    void dccon(long user_id,String chat_id,String number){
+    void dccon(String chat_id,String number){
         try {
             getDCcon dccon = new getDCcon(number);
             convwebm webm = new convwebm();
@@ -443,11 +443,11 @@ public class Command {
                 System.out.println(i + "번째 완료");
             }
 
-            ac.createNewStickerSet(Long.toString(user_id), number, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/0.webm"), "\uD83C\uDF5E");
+            ac.createNewStickerSet(Main.setting.getString("manager_userid"), number, title, new File(System.getProperty("user.dir") + "/webm/" + title + "/0.webm"), "\uD83C\uDF5E");
 
             ac.Edittext(Long.parseLong(chat_id), resume, "진행중..." + ++count + "/" + (list.length/3 + 3));
             for (int i = 1; i < list.length; i++) {
-                ac.addStickerToSet(Long.toString(user_id), number, new File(System.getProperty("user.dir") + "/webm/" + title + "/" + i + ".webm"), "\uD83C\uDF5E");
+                ac.addStickerToSet(Main.setting.getString("manager_userid"), number, new File(System.getProperty("user.dir") + "/webm/" + title + "/" + i + ".webm"), "\uD83C\uDF5E");
             }
 
             ac.Edittext(Long.parseLong(chat_id), resume, "진행완료..." + (list.length/3+3) + "/" + (list.length/3 + 3));

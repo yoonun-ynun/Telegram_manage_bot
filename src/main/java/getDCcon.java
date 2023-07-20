@@ -45,6 +45,8 @@ public class getDCcon {
                 String path = detail.getJSONObject(i).getString("path");
                 URL url = new URL("https://dcimg5.dcinside.com/dccon.php?no=" + path);
                 HttpURLConnection con = (HttpURLConnection) url.openConnection();
+                con.setRequestProperty("Referer", "https://dccon.dcinside.com/#" + number);
+                con.setRequestMethod("GET");
                 is = con.getInputStream();
                 String disposition = con.getHeaderField("Content-Disposition");
                 String filename = disposition.split("filename=")[1];
