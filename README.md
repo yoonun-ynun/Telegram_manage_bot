@@ -8,10 +8,10 @@
 
 https를 위한 인증서가 필요하며 .jks로 되어있어야 합니다.
 
-config.txt의 hostname, key_path, key_password, Telegram_token은 필수 항목입니다.
+config.txt의 hostname, key_path, key_password, Telegram_token, manager_userid 는 필수 항목입니다.
 
 key_path에는 인증서의 위치, key_password에는 인증서의 비밀번호가 들어갑니다.
-bot_username: 봇의 유저네임(dccon 명령어에 사용됨)
+bot_username: 봇의 유저네임,manager_userid: 봇 관리자의 유저 ID (dccon 명령어에 사용됨)
 
 /hitomi - 품번을 url로 전환하고 첫 번째 페이지의 이미지를 전송합니다.<br>
 /gethitomi - 품번을 사용하여 작품을 다운로드 합니다.<br>
