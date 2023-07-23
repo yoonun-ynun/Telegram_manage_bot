@@ -13,12 +13,13 @@ public class Hitomi implements HttpHandler {
             exchange.sendResponseHeaders(200, 0);
             System.out.println(exchange.getRequestURI());
             String URI = exchange.getRequestURI().toString().substring(8);
-            File file = new File(System.getProperty("user.dir") + "/hitomi/", URI);
+            File file = new File(System.getProperty("user.dir") + "/hitomi/", URI + ".zip");
             if(file.exists()){
                 FileInputStream in = new FileInputStream(file);
                 DataOutputStream response = new DataOutputStream(exchange.getResponseBody());
                 Headers responseheader = exchange.getResponseHeaders();
                 responseheader.set("Content-Type", "application/zip");
+                responseheader.set("Content-Length", Long.toString(file.length()));
                 int BUFFER_SIZE = 4096;
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int bytesRead;

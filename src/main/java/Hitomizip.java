@@ -108,7 +108,7 @@ public class Hitomizip implements Runnable{
 
             long file_size = (zipfile.length()/1024)/1024;
             if(file_size>=50){
-                ac.SendMessage(chat_id, "https://" + Main.setting.getString("hostname") + "/hitomi/" + key + ".zip");
+                ac.SendMessage(chat_id, "https://" + Main.setting.getString("hostname") + "/hitomi/" + key);
             }else {
                 ac.SendDocument(chat_id, zipfile);
             }
