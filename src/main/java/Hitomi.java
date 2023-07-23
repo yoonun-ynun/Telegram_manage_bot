@@ -4,6 +4,8 @@ import com.sun.net.httpserver.HttpHandler;
 
 import java.io.*;
 
+import static java.net.HttpURLConnection.HTTP_OK;
+
 public class Hitomi implements HttpHandler {
     @Override
     public void handle(HttpExchange exchange) throws IOException {
@@ -17,9 +19,9 @@ public class Hitomi implements HttpHandler {
             if(file.exists()){
                 FileInputStream in = new FileInputStream(file);
                 DataOutputStream response = new DataOutputStream(exchange.getResponseBody());
-                Headers responseheader = exchange.getResponseHeaders();
-                responseheader.set("Content-Type", "application/zip");
-                responseheader.set("Content-Length", Long.toString(file.length()));
+                exchange.getResponseHeaders().set("Content-Type", "application/zip");
+                exchange.getResponseHeaders().set("Content-Length", Long.toString(file.length()));
+                exchange.sendResponseHeaders(HTTP_OK, file.length());
                 int BUFFER_SIZE = 4096;
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int bytesRead;
