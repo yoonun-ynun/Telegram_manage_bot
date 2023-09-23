@@ -69,7 +69,6 @@ public class Hitomizip implements Runnable{
                 if(TIME_count>300){
                     service.shutdownNow();
                     fail = true;
-                    break;
                 }
                 if(private_count != count[0]){
                     try {
@@ -89,19 +88,24 @@ public class Hitomizip implements Runnable{
             ZipOutputStream out = new ZipOutputStream(new FileOutputStream(zipfile));
 
             for(int i = 1;i<=length;i++){
-                FileInputStream in = new FileInputStream(new File(System.getProperty("user.dir") + "/hitomi/" + key + "/", i + ".webp"));
-                ZipEntry en = new ZipEntry(i + ".webp");
-                out.putNextEntry(en);
+                try {
+                    FileInputStream in = new FileInputStream(new File(System.getProperty("user.dir") + "/hitomi/" + key + "/", i + ".webp"));
+                    ZipEntry en = new ZipEntry(i + ".webp");
+                    out.putNextEntry(en);
 
-                final int BUFFER_SIZE = 4096;
-                int bytesRead;
-                byte[] buffer = new byte[BUFFER_SIZE];
-                while ((bytesRead = in.read(buffer)) != -1){
-                    out.write(buffer, 0, bytesRead);
+                    final int BUFFER_SIZE = 4096;
+                    int bytesRead;
+                    byte[] buffer = new byte[BUFFER_SIZE];
+                    while ((bytesRead = in.read(buffer)) != -1) {
+                        out.write(buffer, 0, bytesRead);
+                    }
+
+                    out.closeEntry();
+                    in.close();
+                }catch (FileNotFoundException e){
+                    System.out.println(i + "번째 이미지가 없음 건너뜀");
+                    e.printStackTrace();
                 }
-
-                out.closeEntry();
-                in.close();
             }
             out.close();
 
