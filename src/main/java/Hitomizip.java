@@ -64,10 +64,11 @@ public class Hitomizip implements Runnable{
             service.shutdown();
             int TIME_count = 0;
             int private_count = 0;
+            boolean fail = false;
             while (!service.awaitTermination(2, TimeUnit.SECONDS)){
                 if(TIME_count>300){
-                    ac.SendMessage(chat_id, "[gethitomi] 일부 파일의 다운로드에 실패하였습니다, 압축을 시작합니다.");
                     service.shutdownNow();
+                    fail = true;
                 }
                 if(private_count != count[0]){
                     try {
@@ -79,7 +80,8 @@ public class Hitomizip implements Runnable{
                 }
                 TIME_count++;
             }
-
+            if(fail)
+                ac.SendMessage(chat_id, "[gethitomi] 일부 파일의 다운로드에 실패하였습니다, 압축을 시작합니다.");
             TimeUnit.SECONDS.sleep(1);
             ac.Edittext(chat_id, message_id, "파일 압축중..");
             File zipfile = new File(System.getProperty("user.dir") + "/hitomi/", key + ".zip");
