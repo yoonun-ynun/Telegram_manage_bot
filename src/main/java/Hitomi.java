@@ -19,9 +19,8 @@ public class Hitomi implements HttpHandler {
             if(file.exists()){
                 FileInputStream in = new FileInputStream(file);
                 DataOutputStream response = new DataOutputStream(exchange.getResponseBody());
-                exchange.getResponseHeaders().set("Content-Type", "application/zip");
-                exchange.getResponseHeaders().set("Content-Length", Long.toString(file.length()));
-                exchange.sendResponseHeaders(HTTP_OK, file.length());
+                exchange.getResponseHeaders().set("Content-type", "application/zip");
+                exchange.getResponseHeaders().set("Content-length", Long.toString(file.length()));
                 int BUFFER_SIZE = 4096;
                 byte[] buffer = new byte[BUFFER_SIZE];
                 int bytesRead;

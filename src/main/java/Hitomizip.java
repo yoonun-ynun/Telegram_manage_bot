@@ -66,9 +66,8 @@ public class Hitomizip implements Runnable{
             int private_count = 0;
             while (!service.awaitTermination(2, TimeUnit.SECONDS)){
                 if(TIME_count>300){
-                    ac.Edittext(chat_id,message_id, "다운로드 실패 cause: 시간초과");
+                    ac.SendMessage(chat_id, "[gethitomi] 일부 파일의 다운로드에 실패하였습니다, 압축을 시작합니다.");
                     service.shutdownNow();
-                    return;
                 }
                 if(private_count != count[0]){
                     try {
