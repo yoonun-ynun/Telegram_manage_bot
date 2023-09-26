@@ -1,10 +1,7 @@
 import org.checkerframework.checker.units.qual.A;
 import org.json.JSONObject;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.PrintWriter;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -577,5 +574,27 @@ public class Command {
         }
         if(check[0])
             ac.delete_massage(chat_id, message_id);
+    }
+    void searchTag(String tag, long chat_id, long message_id)throws Exception {
+        String[] tags = tag.split(",");
+        int page = Integer.parseInt(tags[tags.length-1].replaceAll(" ", ""));
+        @SuppressWarnings("Unchecked")
+        HashSet<Integer>[] lists = new HashSet[tags.length-1];
+
+        for(int i = 0;i< lists.length;i++){
+            lists[i] = new tagSearch().search(tags[i].split(":")[0], tags[i].split(":")[1]);
+        }
+        indexingH indexing = new indexingH();
+        HashSet<Integer> indexed = indexing.indexing(lists);
+        int pages = (indexed.size()/10) + 1;
+        HashMap<Integer, String> Title = indexing.getTitle(page, indexed);
+        StringBuilder result = new StringBuilder("HitomiTags\n\n");
+        Title.forEach((key, value) ->{
+            result.append("품번: ").append(key).append("  제목: ").append(value).append("\n");
+        });
+        result.append("\n\n").append(page).append("/").append(pages);
+        Action ac = new Action();
+        ac.SendReply(chat_id, message_id, result.toString());
+
     }
 }

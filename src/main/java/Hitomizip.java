@@ -67,8 +67,7 @@ public class Hitomizip implements Runnable{
             boolean fail = false;
             while (!service.awaitTermination(2, TimeUnit.SECONDS)){
                 if(TIME_count>300){
-                    service.shutdownNow();
-                    fail = true;
+                    service.shutdownNow(); fail = true; break;
                 }
                 if(private_count != count[0]){
                     try {
