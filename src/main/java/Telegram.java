@@ -239,7 +239,7 @@ public class Telegram implements HttpHandler{
                             }
                         }
                         if(command.equals("/searchtag")){
-                            String text = message.replaceAll("/searchTag", "");
+                            String text = message.replaceAll("/searchtag", "");
                             new Command().searchTag(text, chat_id, key);
                         }
                     }
