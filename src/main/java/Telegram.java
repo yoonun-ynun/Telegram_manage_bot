@@ -238,7 +238,7 @@ public class Telegram implements HttpHandler{
                                 ac.SendMessage(chat_id, "대기열에 추가되었습니다. " + th_size + "/" + th_size);
                             }
                         }
-                        if(command.equals("/searchTag")){
+                        if(command.equals("/searchtag")){
                             String text = message.replaceAll("/searchTag", "");
                             new Command().searchTag(text, chat_id, key);
                         }
