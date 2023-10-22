@@ -1,14 +1,13 @@
-import org.checkerframework.checker.units.qual.A;
 import org.json.JSONObject;
 
 import java.io.*;
-import java.lang.reflect.Array;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Command {
     static ArrayList<Thread> download = new ArrayList<>();
@@ -589,12 +588,22 @@ public class Command {
         int pages = (indexed.size()/10) + 1;
         HashMap<Integer, String> Title = indexing.getTitle(page, indexed);
         StringBuilder result = new StringBuilder("HitomiTags\n\n");
+        AtomicInteger count = new AtomicInteger();
+        Files.createDirectories(Paths.get(System.getProperty("user.dir") + "/file/"));
         Title.forEach((key, value) ->{
             result.append("품번: ").append(key).append("  제목: ").append(value).append("\n");
+            gethitomi down = new gethitomi();
+            try {
+                down.getimage(key.toString(), 1, new File(System.getProperty("user.dir") + "/file/" + chat_id +"-" +count+ ".webp"));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            count.getAndIncrement();
         });
         result.append("\n\n").append(page).append("/").append(pages);
         Action ac = new Action();
         ac.SendReply(chat_id, message_id, result.toString());
 
+        new Action().sendMediaGroup_Photo(chat_id, chat_id +"-0.webp", chat_id +"-1.webp", chat_id +"-2.webp",chat_id +"-3.webp",chat_id +"-4.webp",chat_id +"-5.webp");
     }
 }

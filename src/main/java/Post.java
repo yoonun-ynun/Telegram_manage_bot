@@ -1,3 +1,5 @@
+import org.json.JSONObject;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.InputStreamReader;
@@ -10,6 +12,7 @@ public class Post {
         this.Address = Address;
     }
     StringBuilder data = new StringBuilder();
+    String content_type = "application/x-www-form-urlencoded";
 
     String Address;
     StringBuilder start() throws Exception{
@@ -17,7 +20,7 @@ public class Post {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
 
         con.setRequestMethod("POST");
-        con.setRequestProperty("Content-Type", "application/x-www-form-urlencoded");
+        con.setRequestProperty("Content-Type", content_type);
         con.setDoOutput(true);
         BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(con.getOutputStream()));
         bw.write(data.toString());
@@ -46,5 +49,9 @@ public class Post {
             this.data.append("&");
         }
         this.data.append(id).append("=").append(data);
+    }
+    public void input_json(JSONObject data){
+        this.data.append(data.toString());
+        content_type = "application/json";
     }
 }

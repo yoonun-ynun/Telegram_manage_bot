@@ -29,11 +29,11 @@ class indexingH {
         int count = 0;
         for (int key : result) {
             count++;
-            if(count>(page-1)*10) {
+            if(count>(page-1)*6) {
                 String title = getTitle(key);
                 index.put(key, title);
             }
-            if(count == page*10)
+            if(count == page*6)
                 break;
         }
         return index;

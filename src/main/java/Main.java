@@ -5,7 +5,6 @@ import java.security.KeyStore;
 import java.time.Duration;
 
 import com.sun.net.httpserver.*;
-import com.theokanning.openai.OpenAiApi;
 import com.theokanning.openai.OpenAiService;
 import org.json.JSONObject;
 
@@ -116,7 +115,7 @@ public class Main {
             });
 
             server.createContext("/Telegram", new Telegram());
-            server.createContext("/hitomi", new Hitomi());
+            server.createContext("/file", new SendFile());
             server.setExecutor(null);
             server.start();
 

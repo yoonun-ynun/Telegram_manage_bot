@@ -3,6 +3,7 @@ import com.theokanning.openai.completion.CompletionRequest;
 import com.theokanning.openai.completion.CompletionResult;
 import com.theokanning.openai.image.CreateImageRequest;
 import com.theokanning.openai.image.ImageResult;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.*;
@@ -80,6 +81,20 @@ public class Action {
         }catch (Exception e){
             e.printStackTrace();
         }
+    }
+
+    void sendMediaGroup_Photo(Long id, String... files)throws Exception{
+        JSONArray send_file = new JSONArray();
+        for(int i =0;i<files.length;i++){
+            send_file.put(new JSONObject().put("type", "photo").put("media", "attach://" + files[i]));
+        }
+        Multipart multi = new Multipart(this.Address + "sendMediaGroup");
+        multi.input_text("chat_id", id.toString());
+        multi.input_text("media", send_file.toString());
+        for(int i =0;i< files.length;i++){
+            multi.input_file("image/" + files[i].split("\\.")[1], files[i], new File(System.getProperty("user.dir") + "/file/" + files[i]));
+        }
+        System.out.println(multi.start());
     }
 
     StringBuilder SendPhoto(Long id, File file) throws Exception{
